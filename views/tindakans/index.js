@@ -1,0 +1,3 @@
+TextDecoderStream
+
+module.exports = tindakanViews;
