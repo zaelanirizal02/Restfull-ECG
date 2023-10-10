@@ -243,8 +243,8 @@ form label {
                                 <hr style="size: 10px;">
                                 <br>
 
-                                <button type="submit" class="btn btn-md btn-success mr-2">SIMPAN</button>
-                                <button type="reset" class="btn btn-md btn-danger">RESET</button>
+                                <button type="submit" class="btn btn-md btn-success">SIMPAN</button>
+                                <button type="reset" class="btn btn-md btn-danger ms-2">RESET</button>
                             </form>
                             <!-- ... -->
                         </div>

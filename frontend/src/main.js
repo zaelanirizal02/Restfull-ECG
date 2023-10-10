@@ -1,16 +1,28 @@
-//import createApp from Vue
 import { createApp } from "vue";
-
-//import component App
 import App from "./App.vue";
-
-//import config router
 import router from "./router";
+import vuetify from "./plugins/vuetify";
+import { loadFonts } from "./plugins/webfontloader";
+import "vuetify/dist/vuetify.css";
 
-//create App Vue
+import PrimeVue from "primevue/config";
+
+import DataTable from "primevue/datatable";
+import Column from "primevue/column";
+
+import "primevue/resources/themes/bootstrap4-dark-purple/theme.css";
+import "primevue/resources/primevue.min.css";
+import "primeicons/primeicons.css";
+
 const app = createApp(App);
 
-//gunakan "router" di Vue dengan plugin "use"
-app.use(router);
+app.component("DataTable", DataTable);
+app.component("Column", Column);
 
-app.mount("#app");
+app.use(PrimeVue, { ripple: true });
+
+app.config.productionTip = false;
+
+loadFonts();
+
+app.use(router).use(vuetify).mount("#app");

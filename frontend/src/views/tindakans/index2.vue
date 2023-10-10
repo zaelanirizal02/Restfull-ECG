@@ -1,15 +1,18 @@
+
 <script setup>
+
+
 // import axios from "axios";
 import { onMounted, ref } from "vue";
 import api from '../../api';
+
 // const url = "http://localhost:3000/api";
 
 
 const items = ref([]); // Store the fetched data in the "items" ref
 
-
 const formatDate = (dateString) => {
-    // Mengambil hanya bagian tanggal (YYYY-MM-DD) dari string tanggal lengkap
+    // tanggal (YYYY-MM-DD) dari string tanggal lengkap
     const tanggalLahir = new Date(dateString);
     const year = tanggalLahir.getFullYear();
     const month = String(tanggalLahir.getMonth() + 1).padStart(2, '0'); // +1 karena indeks bulan dimulai dari 0
@@ -18,12 +21,10 @@ const formatDate = (dateString) => {
     return `${year}-${month}-${day}`;
 };
 
-
-
 const getTindakan = async () => {
     try {
         const response = await api.get("api/tindakans");
-
+        // items.value = response.data.data.rows;
         if (response.status === 200) {
             // Check if the response status is 200 (OK)
             items.value = response.data.data.rows; // Store the data in "items"
@@ -38,6 +39,7 @@ const getTindakan = async () => {
 onMounted(() => {
     getTindakan();
 });
+
 </script>
 
 <style>
@@ -58,13 +60,18 @@ onMounted(() => {
         <router-link :to="{ name: 'tindakans.create' }" class="btn btn-success rounded shadow border-0"><i
                 class="bi bi-plus-circle"></i> Tambah
             Tindakan</router-link>
-        <router-link :to="{ name: 'tindakans.create' }" class="btn btn-warning rounded shadow border-0"><i
+        <router-link :to="{ name: 'tindakans.create' }" class="btn btn-danger rounded shadow border-0 ms-2"><i
                 class="bi bi-x-octagon"></i> Batalkan Tindakan
             Tindakan</router-link>
-        <a href="/create" class="btn btn-dark rounded shadow border-0 ms-auto">
+        <a href="/option" class="btn btn-dark rounded shadow border-0 ms-auto">
             <i class="bi bi-gear"></i> Setting
         </a>
-
+        <a href="/option" class="btn btn-dark rounded shadow border-0 ms-2">
+            <i class="bi bi-gear"></i> Setting
+        </a>
+        <a href="/option" class="btn btn-dark rounded shadow border-0 ms-2">
+            <i class="bi bi-gear"></i> Setting
+        </a>
 
     </div>
 
@@ -120,6 +127,5 @@ onMounted(() => {
                 </table>
             </div>
         </div>
-
     </div>
 </template>

@@ -10,10 +10,16 @@ const routes = [
       import(/* webpackChunkName: "home" */ "../views/tindakans/index2.vue"),
   },
   {
-    path: "/index",
+    path: "/contoh",
+    name: "tindakans.contoh",
+    component: () =>
+      import(/* webpackChunkName: "index" */ "../views/tindakans/contoh.vue"),
+  },
+  {
+    path: "/contoh2",
     name: "tindakans.index",
     component: () =>
-      import(/* webpackChunkName: "index" */ "../views/tindakans/index.vue"),
+      import(/* webpackChunkName: "index" */ "../views/tindakans/contoh2.vue"),
   },
   {
     path: "/create",
@@ -29,9 +35,21 @@ const routes = [
   },
   {
     path: "/option",
-    name: "tindakans.options",
+    name: "tindakans.setting",
     component: () =>
-      import(/* webpackChunkName: "edit" */ "../views/tindakans/option.vue"),
+      import(/* webpackChunkName: "edit" */ "../views/tindakans/setting.vue"),
+  },
+
+  //AUTH
+  {
+    path: "/login",
+    name: "login",
+    component: () => import("../views/auth/login.vue"),
+  },
+  {
+    path: "/daftar",
+    name: "daftar",
+    component: () => import("../views/auth/daftar.vue"),
   },
 ];
 
