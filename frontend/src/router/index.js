@@ -22,6 +22,12 @@ const routes = [
       import(/* webpackChunkName: "index" */ "../views/tindakans/contoh2.vue"),
   },
   {
+    path: "/contoh3",
+    name: "tindakans.index",
+    component: () =>
+      import(/* webpackChunkName: "index" */ "../views/tindakans/contoh3.vue"),
+  },
+  {
     path: "/create",
     name: "tindakans.create",
     component: () =>
