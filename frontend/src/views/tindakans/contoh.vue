@@ -41,10 +41,32 @@ export default {
                         this.$router.push('fileupload');
                     }
                 }
-            ])
+            ]),
+
+            overlayMenuItems: ([
+                {
+                    label: 'Save',
+                    icon: 'pi pi-save'
+                },
+                {
+                    label: 'Update',
+                    icon: 'pi pi-refresh'
+                },
+                {
+                    label: 'Delete',
+                    icon: 'pi pi-trash'
+                },
+                {
+                    separator: true
+                },
+                {
+                    label: 'Home',
+                    icon: 'pi pi-home'
+                }
+            ]),
+
         };
     },
-
 
     computed: {
         formattedItems() {
@@ -68,28 +90,41 @@ export default {
             } catch (error) {
                 console.error('Error fetching data from API:', error);
             }
+
         },
 
-
+        toggleMenu(event) {
+            this.$refs.menu.toggle(event);
+        },
     },
-};
+
+}
 
 </script>
 
 <template>
+    <!-- NAVBAR -->
     <div class="card">
         <Toolbar>
             <template #start>
-                <Button label="New" icon="pi pi-plus" class="mr-2" />
-                <Button label="Upload" icon="pi pi-upload" severity="success" />
+                <a href="/create">
+                    <Button label="Tambah" icon="pi pi-plus" class="mr-2" />
+                </a>
+                <a href="/registrasi">
+                    <Button label="Upload" icon="pi pi-upload" severity="success" />
+                </a>
                 <i class="pi pi-bars p-toolbar-separator mr-2" />
                 <SplitButton label="Save" icon="pi pi-check" :model="item" severity="warning"></SplitButton>
             </template>
 
             <template #end>
                 <Button icon="pi pi-search" class="mr-2" />
-                <Button icon="pi pi-calendar" severity="success" class="mr-2" />
-                <Button icon="pi pi-times" severity="danger" />
+                <Button icon="pi pi-file-pdf" severity="success" class="mr-2" />
+                <Button icon="pi pi-user" severity="danger" class="mr-2" />
+                <div class="card">
+                    <Menu ref="menu" :model="overlayMenuItems" :popup="true" />
+                    <SplitButton type="button" icon="pi pi-user" @click="toggleMenu" style="width: 50px" />
+                </div>
             </template>
 
             <template>
@@ -103,32 +138,42 @@ export default {
 
 
     <div class="">
-        <div class="">
-            <div class="card">
-                <DataTable :value="formattedItems" sortMode="multiple" paginator :rows="10"
-                    :rowsPerPageOptions="[5, 10, 20, 50]" showGridlines tableStyle="min-width: 150rem" stripedRows>
-                    <Column field="tgl_periksa" header="Tgl Periksa" sortable headerStyle="min-width: 100px"></Column>
-                    <Column field="no_mr" header="NO MR" sortable headerStyle="min-width: 80px"
-                        tableStyle="'min-width:40rem'"></Column>
-                    <Column field="nama_lengkap" header="Nama" sortable headerStyle="min-width: 100px"></Column>
-                    <Column field="tgl_lahir" header="Tgl Lahir" sortable headerStyle="min-width:100px">
-                    </Column>
-                    <Column field="jenis_kelamin" header="Jenis Kelamin" sortable headerStyle="min-width: 120px"
-                        tableStyle="'min-width:40rem'"></Column>
-                    <Column field="title" header="Title" sortable></Column>
-                    <Column field="race" header="Race" sortable></Column>
-                    <Column field="jam_periksa" header="Jam Periksa" sortable></Column>
-                    <Column field="id_dokter_jaga" header="ID Dokter Jaga" sortable></Column>
-                    <Column field="nama_dokter_jaga" header="Nama Dokter Jaga" sortable></Column>
-                    <Column field="ruangan_dokter_jaga" header="Ruangan Dokter Jaga" sortable></Column>
-                    <Column field="id_dokter_dpjp" header="ID Dokter DPJP" sortable></Column>
-                    <Column field="nama_dokter_dpjp" header="Nama Dokter DPJP" sortable></Column>
-                    <Column field="ruangan_dokter_dpjp" header="Ruangan Dokter DPJP" sortable></Column>
-                    <Column field="id_dokter_perujuk" header="ID Dokter Perujuk" sortable></Column>
-                    <Column field="nama_dokter_perujuk" header="Nama Dokter Perujuk" sortable></Column>
-                    <Column field="ruangan_dokter_perujuk" header="Ruangan Dokter Perujuk" sortable></Column>
-                </DataTable>
-            </div>
+        <div class="card">
+            <TabView class="col">
+                <TabPanel header="TINDAKAN ECG">
+                    <DataTable :value="formattedItems" sortMode="multiple" paginator :rows="10"
+                        :rowsPerPageOptions="[5, 10, 20, 50]" tableStyle="min-width: 50rem" stripedRows>
+
+                        <Column field="tgl_periksa" header="Tgl Periksa" sortable
+                            headerStyle="white-space: nowrap; text-align: center;"></Column>
+                        <Column field="no_mr" header="NO MR" sortable headerStyle="white-space: nowrap; text-align: center;"
+                            tableStyle="'min-width:40rem'"></Column>
+                        <Column field="nama_lengkap" header="Nama" sortable
+                            headerStyle="white-space: nowrap; text-align: center;"></Column>
+                        <Column field="tgl_lahir" header="Tgl Lahir" sortable
+                            headerStyle="white-space: nowrap; text-align: center;">
+                        </Column>
+                        <Column field="jenis_kelamin" header="Jenis Kelamin" sortable
+                            headerStyle="white-space: nowrap; text-align: center;" tableStyle="'min-width:40rem'"></Column>
+                        <Column field="title" header="Title" sortable></Column>
+                        <Column field="race" header="Race" sortable></Column>
+                        <Column field="jam_periksa" header="Jam Periksa" sortable></Column>
+                        <Column field="id_dokter_jaga" header="ID Dokter Jaga" sortable></Column>
+                        <Column field="nama_dokter_jaga" header="Nama Dokter Jaga" sortable></Column>
+                        <Column field="ruangan_dokter_jaga" header="Ruangan Dokter Jaga" sortable></Column>
+                        <Column field="id_dokter_dpjp" header="ID Dokter DPJP" sortable></Column>
+                        <Column field="nama_dokter_dpjp" header="Nama Dokter DPJP" sortable></Column>
+                        <Column field="ruangan_dokter_dpjp" header="Ruangan Dokter DPJP" sortable></Column>
+                        <Column field="id_dokter_perujuk" header="ID Dokter Perujuk" sortable></Column>
+                        <Column field="nama_dokter_perujuk" header="Nama Dokter Perujuk" sortable></Column>
+                        <Column field="ruangan_dokter_perujuk" header="Ruangan Dokter Perujuk" sortable></Column>
+                    </DataTable>
+                </TabPanel>
+
+                <TabPanel header="TINDAKAN DIBATALKAN">
+
+                </TabPanel>
+            </TabView>
         </div>
     </div>
 </template>
@@ -136,5 +181,9 @@ export default {
 <style>
 table td {
     text-align: center;
+}
+
+.custom-table {
+    height: 300px;
 }
 </style>

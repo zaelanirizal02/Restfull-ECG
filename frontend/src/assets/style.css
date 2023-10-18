@@ -1,0 +1,98 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
+/* @import url(http://fonts.googleapis.com/css?family=Lato:100,200,300,400); */
+
+
+.ql-container {
+  height: 90%;
+  min-width: 100%;
+  max-width: 100%;
+}
+
+body {
+	margin: 0;
+	height: 100%;
+	overflow-x: hidden;
+	overflow-y: auto;
+	background-color: var(--surface-a);
+	color: var(--text-color);
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+.ogrid {
+  background: var(--surface-50);
+  padding: 0.5rem;
+  -webkit-box-shadow: 0 2px 1px -1px rgba(0,0,0,.2),0 1px 1px 0 rgba(0,0,0,.14),0 1px 3px 0 rgba(0,0,0,.12);
+  box-shadow: 0 2px 1px -1px rgba(0,0,0,.2),0 1px 1px 0 rgba(0,0,0,.14),0 1px 3px 0 rgba(0,0,0,.12);
+  border-radius: 4px;
+}
+
+.p-dialog .p-dialog-header {
+  background-color: var(--bluegray-700) !important;
+  color: var(--teal-50) !important;
+  padding: .4rem !important;
+  padding-left: 1rem !important;
+}
+
+/* .p-dialog .p-dialog-header {
+  background-color: var(--bluegray-700);
+  color: var(--teal-50);
+} */
+
+.v-toast {
+  z-index: 1000000000 !important;
+}
+
+.p-calendar .p-inputtext {
+  width: 10rem !important;
+}
+
+input {
+  width: 10rem !important;
+}
+
+/* input:-internal-autofill-selected{
+  background-color: none !important;
+} */
+
+input:-webkit-autofill, input:-webkit-autofill:focus, input:-webkit-autofill:hover  {
+    transition: background-color 600000s 0s, color 600000s 0s !important;
+}
+
+* {
+  scrollbar-width: thin !important;          /* "auto" or "thin" */
+  scrollbar-color: darkslateblue lightslategrey !important;   /* scroll thumb and track */
+}
+
+*::-webkit-scrollbar {
+  width: 12px !important;               /* width of the entire scrollbar */
+}
+
+*::-webkit-scrollbar-track {
+  background: lightslategrey !important;        /* color of the tracking area */
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: darkslateblue !important;    /* color of the scroll thumb */
+  border-radius: 20px !important;       /* roundness of the scroll thumb */
+  border: 3px solid gray !important;  /* creates padding around scroll thumb */
+}
+
+.p-tooltip .p-tooltip-text {
+  box-shadow: none;
+  font-size: 10px !important;
+}
+
+label, .p-component {
+  font-size: .7rem !important;
+  font-family: Poppins, Avenir, Roboto, Helvetica Neue Light, Helvetica Neue,
+    Helvetica, Arial, Lucida Grande, sans-serif !important;
+}
+
+.p-fieldset .p-fieldset-content{
+  padding: .7rem !important;
+}
+
+
+
+
