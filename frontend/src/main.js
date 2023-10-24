@@ -22,6 +22,8 @@ import Menu from "primevue/menu";
 import ToggleButton from "primevue/togglebutton";
 import TabView from "primevue/tabview";
 import TabPanel from "primevue/tabpanel";
+import Dropdown from "primevue/dropdown";
+import Divider from "primevue/divider";
 
 // import "primevue/resources/themes/md-dark-deeppurple/theme.css";
 import "primevue/resources/themes/bootstrap4-dark-purple/theme.css";
@@ -35,7 +37,8 @@ import "primeflex/primeflex.min.css";
 import "./assets/style.css";
 
 const app = createApp(App);
-
+app.component("Divider", Divider);
+app.component("Dropdown", Dropdown);
 app.component("TabPanel", TabPanel);
 app.component("TabView", TabView);
 app.component("ToggleButton", ToggleButton);

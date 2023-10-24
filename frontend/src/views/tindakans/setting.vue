@@ -1,103 +1,21 @@
-<style>
-form label {
-    font-weight: bold;
-}
-
-.form-group {
-    margin-bottom: 20px;
-}
-</style>
-<template>
-    <div class="tindakans">
-        <div class="container mt-5">
-            <div class="row justify-content-center">
-                <div class="col-md-10">
-                    <div class="card">
-                        <div class="card-header text-center">
-                            <h2><b>SETTING</b></h2>
-                        </div>
-                        <div class="card-body">
-                            <!-- ... -->
-                            <form @submit.prevent="tindakanStore">
-                                <div class="form-group">
-                                    <label>Nama Rumah Sakit</label>
-                                    <input type="text" class="form-control" v-model="tindakan.nama_lengkap" placeholder="">
-                                    <div v-if="validation.nama_lengkap">
-                                        <div class="alert alert-danger mt-1" role="alert">
-                                            {{ validation.nama_lengkap[0] }}
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="form-group">
-                                    <label>Nama Aplikasi</label>
-                                    <input type="text" class="form-control" v-model="tindakan.tgl_lahir" placeholder="">
-                                    <div v-if="validation.tgl_lahir">
-                                        <div class="alert alert-danger mt-1" role="alert">
-                                            {{ validation.tgl_lahir[0] }}
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="form-group">
-                                    <label>Port Server HL7</label>
-                                    <select class="form-control" v-model="tindakan.jenis_kelamin">
-                                        <option value=""></option>
-                                        <option value="M">Laki-Laki</option>
-                                        <option value="F">Perempuan</option>
-                                    </select>
-                                    <div v-if="validation.jenis_kelamin">
-                                        <div class="alert alert-danger mt-1" role="alert">
-                                            {{ validation.jenis_kelamin[0] }}
-                                        </div>
-                                    </div>
-                                </div>
-
-
-                                <div class="form-group">
-                                    <label>Target IP Address HL7</label>
-                                    <input type="text" class="form-control" v-model="tindakan.title" placeholder="">
-                                    <div v-if="validation.title">
-                                        <div class="alert alert-danger mt-1" role="alert">
-                                            {{ validation.title[0] }}
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="form-group">
-                                    <label>Target Port HL7</label>
-                                    <input type="text" class="form-control" v-model="tindakan.title" placeholder="">
-                                    <div v-if="validation.title">
-                                        <div class="alert alert-danger mt-1" role="alert">
-                                            {{ validation.title[0] }}
-                                        </div>
-                                    </div>
-                                </div>
-
-
-
-                                <button type="submit" class="btn btn-md btn-success">SIMPAN</button>
-                                <button type="reset" class="btn btn-md btn-danger ms-2">RESET</button>
-                            </form>
-                            <!-- ... -->
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</template>
-
 <script>
 // import axios from 'axios'
 import api from '../../api';
+import "../../assets/form.css";
 
 export default {
     data() {
         return {
             tindakan: {},
             validation: [],
-            showFormError: false
+            showFormError: false,
+            setting: {
+                nama_RS: '',
+                nama_aplikasi: '',
+                port_sevrer_hl7: '',
+                target_ip_hl7: '',
+                target_port_hl7: '',
+            },
         }
     },
 
@@ -149,3 +67,79 @@ export default {
     },
 }
 </script>
+<style>
+form label {
+    font-weight: bold;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.container {
+    height: 500px;
+}
+</style>
+
+<template>
+    <div class="card">
+        <Toolbar>
+            <template #start>
+                <a href="/">
+                    <Button label="" icon="pi pi-home" class="mr-2" />
+                </a>
+                <a href="/create">
+                    <Button label="Tambah" icon="pi pi-plus" severity="success" />
+                </a>
+            </template>
+
+            <template #end>
+                <Button icon="pi pi-search" class="mr-2" />
+                <Button icon="pi pi-file-pdf" severity="success" class="mr-2" />
+                <div class="card">
+                    <SplitButton label="" icon="pi pi-cog" :model="overlayMenuItems" severity="warning"></SplitButton>
+                </div>
+            </template>
+
+            <template>
+                <div class="card flex justify-content-center">
+                    <Button label="Check" icon="pi pi-check" />
+                </div>
+            </template>
+        </Toolbar>
+    </div>
+
+    <div class="container">
+        <div class="card-header text-center">
+            <h2 class="jpa"><b>SETTING</b></h2>
+        </div>
+        <Divider />
+        <div class="jrkform">
+            <!-- Bagian 1 -->
+            <div class="field jpa jpb grid">
+                <label for="" class="col-12 mb-1 md:col-1 md:mb-0">Nama Rumah Sakit</label>
+                <InputText v-model="setting.nama_RS" class="jkn" label="Nama Rumah Sakit" type="text"
+                    placeholder="Nama RS" />
+                <label for="" class="col-12 mb-1 md:col-1 md:mb-0">Nama Aplikasi</label>
+                <InputText v-model="setting.nama_aplikasi" class="jkn" label="Nama Aplikasi" type="text"
+                    placeholder="Nama Aplikasi" />
+                <label for="" class="col-12 mb-1 md:col-1 md:mb-0">Port Server HL7</label>
+                <InputText class="font-dropdown" v-model="setting.port_sevrer_hl7" type="number" placeholder="Port" />
+            </div>
+
+            <div class="field jpa jpb grid">
+                <label for="" class="col-12 mb-1 md:col-1 md:mb-0">Target IP HL7</label>
+                <InputText v-model="setting.target_ip_hl7" class="jkn" label="Target IP HL7" type="number"
+                    placeholder="Target IP" />
+                <label for="" class="col-12 mb-1 md:col-1 md:mb-0">Target Port HL7</label>
+                <InputText v-model="setting.target_port_hl7" class="jkn" label="Target Port HL7" type="number"
+                    placeholder="Target Port" />
+                <Button label="Apply" @click="kirimData()" class="ml-2 font-bold" style="width: 250px;"
+                    icon="pi pi-check" />
+
+            </div>
+        </div>
+    </div>
+</template>
+
+

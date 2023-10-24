@@ -5,25 +5,19 @@ import { createRouter, createWebHistory } from "vue-router";
 const routes = [
   {
     path: "/",
-    name: "home",
+    name: "tindakans.index",
     component: () =>
-      import(/* webpackChunkName: "home" */ "../views/tindakans/index2.vue"),
-  },
-  {
-    path: "/contoh",
-    name: "tindakans.contoh",
-    component: () =>
-      import(/* webpackChunkName: "index" */ "../views/tindakans/contoh.vue"),
+      import(/* webpackChunkName: "home" */ "../views/tindakans/index.vue"),
   },
   {
     path: "/contoh2",
-    name: "tindakans.index",
+    name: "tindakans.contoh2",
     component: () =>
       import(/* webpackChunkName: "index" */ "../views/tindakans/contoh2.vue"),
   },
   {
     path: "/contoh3",
-    name: "tindakans.index",
+    name: "tindakans.contoh3",
     component: () =>
       import(/* webpackChunkName: "index" */ "../views/tindakans/contoh3.vue"),
   },

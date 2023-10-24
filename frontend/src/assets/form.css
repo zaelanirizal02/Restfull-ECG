@@ -1,0 +1,39 @@
+.container {
+    margin-top: 20px;
+    margin-left: 20px;
+    margin-right: 20px;
+    border-color: black;
+    width: auto;
+    height: auto;
+    background-color: rgb(26, 25, 25);
+}
+
+.jrk {
+    margin-left: 40px;
+}
+
+.jrkform {
+    margin-left: 150px;
+}
+
+.jkn {
+    margin-right: 100px;
+
+}
+
+.jb {
+    margin-bottom: 20px;
+}
+
+.jpa {
+    padding-top: 20px;
+}
+
+.jpb {
+    padding-bottom: 20px;
+}
+
+.font-dropdown .p-dropdown-label {
+    font-size: 12px;
+    /* Ganti dengan ukuran yang Anda inginkan */
+}

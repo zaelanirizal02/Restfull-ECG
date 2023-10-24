@@ -2,6 +2,8 @@
 // import axios from 'axios'
 import api from '../../api';
 // import { Ref } from 'vue';
+import "../../assets/form.css";
+
 
 export default {
     data() {
@@ -24,7 +26,54 @@ export default {
                 id_dokter_perujuk: '',
                 nama_dokter_perujuk: '',
                 ruangan_dokter_perujuk: '',
-            }
+                status_pembatalan: (false),
+            },
+            overlayMenuItems: ([
+                {
+                    label: 'Logout',
+                    icon: 'pi pi-sign-out'
+                },
+
+                {
+                    label: 'Aplication Setting',
+                    icon: 'pi pi-cog',
+                    command: () => {
+                        window.location.href = '/option';
+                    }
+                },
+                {
+                    separator: true
+                },
+                {
+                    label: 'Home',
+                    icon: 'pi pi-home'
+                }
+            ]),
+
+            RaceOption: [
+                { label: 'Unknow', value: 'Unknow' },
+                { label: 'Caucasian', value: 'Caucasian' },
+                { label: 'Northeast Asian', value: 'Northeast Asian' },
+                { label: 'Southeast Asian', value: 'Southeast Asian' },
+                { label: 'Japanese', value: 'Japanese' },
+                { label: 'African', value: 'African' },
+                { label: 'American', value: 'American' },
+                { label: 'North Indian', value: 'North Indian' },
+                { label: 'South Indian', value: 'South Indian' },
+                { label: 'Mexican', value: 'Mexican' },
+                { label: 'Latino', value: 'Latino' },
+                { label: 'Iberian', value: 'Iberian' },
+                { label: 'Polynesian', value: 'Polynesian' },
+                { label: 'Pakistanis', value: 'Pakistanis' },
+                { label: 'Lainnya', value: 'Lainnya' },
+            ],
+            selectedRace: null,
+
+            SexOption: [
+                { label: 'Laki-Laki', value: 'M' },
+                { label: 'Perempuan', value: 'F' },
+            ],
+            selectedSex: null,
         };
     },
 
@@ -34,11 +83,12 @@ export default {
 
     methods: {
         async kirimData() {
+            this.FormData.status_pembatalan = false;
             try {
                 const response = await api.post('api/tindakans/store', this.FormData);
 
                 console.log('Data Berhasil Ditambah', response.data.data);
-                this.$router.push({ path: 'contoh' });
+                this.$router.push({ path: '/' });
             } catch (error) {
                 console.error('Terjadi Kesalahan', error);
             }
@@ -46,46 +96,48 @@ export default {
     }
 }
 </script>
-
 <style>
 .container {
-    margin-top: 50px;
-    margin-left: 20px;
-    margin-right: 20px;
-    border-color: black;
-    width: auto;
-    height: auto;
-    background-color: rgb(26, 25, 25);
-}
-
-.jrk {
-    margin-left: 40px;
-}
-
-.jrkform {
-    margin-left: 150px;
-}
-
-.jkn {
-    margin-right: 100px;
-
-}
-
-.jb {
-    margin-bottom: 20px;
-}
-
-.jpa {
-    padding-top: 20px;
-}
-
-.jpb {
-    padding-bottom: 20px;
+    height: 550px;
 }
 </style>
 
+
 <template>
+    <div class="card">
+        <Toolbar>
+            <template #start>
+                <a href="/">
+                    <Button label="" icon="pi pi-home" severity="success" class="mr-2" />
+                </a>
+                <a href="/create">
+                    <Button label="Tambah" icon="pi pi-plus" class="mr-2" />
+                </a>
+
+            </template>
+
+            <template #end>
+                <!-- <Button icon="pi pi-search" class="mr-2" /> -->
+                <!-- <Button icon="pi pi-file-pdf" severity="success" class="mr-2" /> -->
+                <div class="card">
+                    <SplitButton label="" icon="pi pi-cog" :model="overlayMenuItems" severity="warning"></SplitButton>
+                </div>
+            </template>
+
+            <template>
+                <div class="card flex justify-content-center">
+                    <Button label="Check" icon="pi pi-check" />
+                </div>
+            </template>
+        </Toolbar>
+    </div>
+
     <div class="container">
+        <div class="card-header text-center">
+            <h2 class="jpa"><b>TAMBAH TINDAKAN</b></h2>
+        </div>
+        <Divider />
+
         <div class="jrkform">
             <!-- Bagian 1 -->
             <div class="field jpa">
@@ -95,8 +147,8 @@ export default {
                 <InputText v-model="FormData.nama_lengkap" class="jkn" label="NO RM" type="text"
                     placeholder="Nama Pasien" />
                 <label for="" class="col-12 mb-1 md:col-1 md:mb-0">Jenis Kelamin</label>
-                <InputText v-model="FormData.jenis_kelamin" type="text" placeholder="pilih --" />
-                <!-- Tambahkan lebih banyak input sesuai kebutuhan -->
+                <Dropdown class="font-dropdown" v-model="FormData.jenis_kelamin" :options="SexOption" optionLabel="label"
+                    optionValue="value" placeholder="Pilih --" style="font-size: 22px;" />
             </div>
 
             <!-- Bagian 2 -->
@@ -106,7 +158,8 @@ export default {
                 <label for="" class="col-12 mb-1 md:col-1 md:mb-0">Title</label>
                 <InputText v-model="FormData.title" class="jkn" type="text" placeholder="Title" />
                 <label for="" class="col-12 mb-1 md:col-1 md:mb-0">Race</label>
-                <InputText v-model="FormData.race" class="jkn" type="text" placeholder="pilih --" />
+                <Dropdown class="font-dropdown" v-model="FormData.race" :options="RaceOption" optionLabel="label"
+                    optionValue="value" placeholder="Pilih --" />
             </div>
             <!-- Bagian 3 -->
             <div class="field">
@@ -145,6 +198,7 @@ export default {
                 <InputText v-model="FormData.tgl_periksa" class="jkn" type="date" placeholder="Tgl Periksa" />
                 <label for="" class="col-12 mb-1 md:col-1 md:mb-0">Jam Periksa</label>
                 <InputText v-model="FormData.jam_periksa" class="jkn" type="time" placeholder="" />
+
                 <Button label="Kirim" @click="kirimData()" class="ml-2 col-1" icon="pi pi-send" />
                 <Button label="" disabled class="ml-2 col" icon="pi pi-ellipsis-v" />
                 <Button label="Reset" icon="pi pi-trash" severity="danger" class="col-1 ml-2" />
@@ -155,8 +209,9 @@ export default {
 
         </div>
     </div>
+</template>
 
-    <div class="">
+    <!-- <div class="">
         <div class="col-8">
             <div class="card">
                 <h5>Horizontal</h5>
@@ -194,7 +249,24 @@ export default {
                     <div class="field grid">
                         <label class="col-12 mb-2 md:col-2 md:mb-0">Race :</label>
                         <div class="col-12 md:col-10">
-                            <InputText v-model="FormData.race" type="text" placeholder="Ras" />
+                            <select class="form-control" v-model="FormData.race">
+                                <option value="">Unknow</option>
+                                <option value="Caucasian">Caucasian</option>
+                                <option value="Northeast Asian">Northeast Asian</option>
+                                <option value="Southeast Asian">Southeast Asian</option>
+                                <option value="Japanese">Japanese</option>
+                                <option value="African">African</option>
+                                <option value="African American">African American</option>
+                                <option value="North Indian">North Indian</option>
+                                <option value="South Indian">South Indian</option>
+                                <option value="Mexican">Mexican</option>
+                                <option value="American">American</option>
+                                <option value="Latino American">Latino American</option>
+                                <option value="Iberian">Iberian</option>
+                                <option value="Pakistanis">Pakistanis</option>
+                                <option value="Polynesian">Polynesian</option>
+                                <option value="Lainnya">Lainnya</option>
+                            </select>
                         </div>
                     </div>
                     <div class="field grid">
@@ -272,10 +344,10 @@ export default {
                 <button @click="kirimData()">Kirim</button>
             </div>
         </div>
-    </div>
+    </div> -->
 
 
-    <div class="card flex flex-column align-items-center gap-2">
+    <!-- <div class="card flex flex-column align-items-center gap-2">
         <InputText v-model="FormData.no_mr" label="NO RM" type="text" placeholder="NO RM" />
         <InputText v-model="FormData.nama_lengkap" type="text" placeholder="Nama Pasien" />
         <InputText v-model="FormData.tgl_lahir" type="date" placeholder="Tgl Lahir" />
@@ -293,12 +365,10 @@ export default {
         <InputText v-model="FormData.id_dokter_perujuk" type="text" placeholder="ID DOkter Perujuk" />
         <InputText v-model="FormData.nama_dokter_perujuk" type="text" placeholder="Nama Dokter Perujuk" />
         <InputText v-model="FormData.ruangan_dokter_perujuk" type="text" placeholder="Ruangan Dokter Perujuk" />
-        <!-- 
         <button type="submit" class="btn btn-md btn-success mr-2">SIMPAN</button>
         <button type="reset" class="btn btn-md btn-danger">RESET</button> -->
-        <button @click="kirimData()">Kirim</button>
-    </div>
-</template>
+    <!-- <button @click="kirimData()">Kirim</button> -->
+    <!-- </div> --> -->
 
 
 

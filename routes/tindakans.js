@@ -9,7 +9,24 @@ const connection = require("../config/pg-database");
 // INDEX
 router.get("/", function (req, res) {
   //query
-  connection.query("SELECT * FROM tindakan_ecgs ", function (err, rows) {
+  connection.query("SELECT * FROM tindakan_ecgs", function (err, rows) {
+    if (err) {
+      return res.status(500).json({
+        status: false,
+        message: "Internal Server Error",
+      });
+    } else {
+      return res.status(200).json({
+        status: true,
+        message: "List Data Posts",
+        data: rows,
+      });
+    }
+  });
+});
+router.get("/dibatalkan", function (req, res) {
+  //query
+  connection.query("SELECT * FROM tindakan_ecgs  ", function (err, rows) {
     if (err) {
       return res.status(500).json({
         status: false,
@@ -77,11 +94,12 @@ router.post(
       id_dokter_perujuk: req.body.id_dokter_perujuk,
       nama_dokter_perujuk: req.body.nama_dokter_perujuk,
       ruangan_dokter_perujuk: req.body.ruangan_dokter_perujuk,
+      status_pembatalan: false,
     };
 
     // insert query
     connection.query(
-      "INSERT INTO tindakan_ecgs (nama_lengkap, tgl_lahir, jenis_kelamin, title, race, no_mr, tgl_periksa, jam_periksa, id_dokter_jaga, nama_dokter_jaga, ruangan_dokter_jaga, id_dokter_dpjp, nama_dokter_dpjp, ruangan_dokter_dpjp, id_dokter_perujuk, nama_dokter_perujuk, ruangan_dokter_perujuk) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17)",
+      "INSERT INTO tindakan_ecgs (nama_lengkap, tgl_lahir, jenis_kelamin, title, race, no_mr, tgl_periksa, jam_periksa, id_dokter_jaga, nama_dokter_jaga, ruangan_dokter_jaga, id_dokter_dpjp, nama_dokter_dpjp, ruangan_dokter_dpjp, id_dokter_perujuk, nama_dokter_perujuk, ruangan_dokter_perujuk, status_pembatalan) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18)",
       [
         formData.nama_lengkap,
         formData.tgl_lahir,
@@ -100,6 +118,7 @@ router.post(
         formData.id_dokter_perujuk,
         formData.nama_dokter_perujuk,
         formData.ruangan_dokter_perujuk,
+        formData.status_pembatalan,
       ],
       function (err, rows, id) {
         //if(err) throw err
