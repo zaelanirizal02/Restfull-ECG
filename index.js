@@ -2,6 +2,21 @@ const express = require("express");
 const app = express();
 const port = 3000;
 const cors = require("cors");
+//import body parser
+const bodyParser = require("body-parser");
+//import route tindakan
+const tindakanRouter = require("./routes/tindakans");
+const authRouter = require("./routes/auth");
+
+const session = require("express-session");
+
+// app.use(
+//   session({
+//     secret: "rahasia",
+//     resave: false,
+//     saveUninitialized: true,
+//   })
+// );
 
 // Middleware untuk mengizinkan CORS
 app.use((req, res, next) => {
@@ -14,18 +29,14 @@ app.use((req, res, next) => {
   next();
 });
 
-//import body parser
-const bodyParser = require("body-parser");
-
 //parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }));
 
 //parse application/json
 app.use(bodyParser.json());
 
-//import route tindakan
-const tindakanRouter = require("./routes/tindakans");
 app.use("/api/tindakans", tindakanRouter);
+app.use("/api/auth", authRouter.routes);
 
 app.listen(port, () => {
   console.log(`connected on localhost:${port}`);

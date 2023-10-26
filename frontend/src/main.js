@@ -24,11 +24,13 @@ import TabView from "primevue/tabview";
 import TabPanel from "primevue/tabpanel";
 import Dropdown from "primevue/dropdown";
 import Divider from "primevue/divider";
+import Listbox from "primevue/listbox";
+import Calendar from "primevue/calendar";
 
 // import "primevue/resources/themes/md-dark-deeppurple/theme.css";
 import "primevue/resources/themes/bootstrap4-dark-purple/theme.css";
 
-// import "primevue/resources/themes/saga-purple/theme.css";
+// import "primevue/resources/themes/lara-dark-indigo/theme.css";
 // import "primeflex/themes/primeone-dark.css";
 
 import "primevue/resources/primevue.min.css";
@@ -58,6 +60,8 @@ app.component("InputText", InputText);
 app.component("InputNumber", InputNumber);
 app.component("OverlayPanel", OverlayPanel);
 app.component("SplitButton", SplitButton);
+app.component("Listbox", Listbox);
+app.component("Calendar", Calendar);
 
 app.use(PrimeVue, { ripple: true });
 

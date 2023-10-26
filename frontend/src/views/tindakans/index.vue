@@ -1,102 +1,128 @@
+
 <script>
-import api from '../../api';
+import api from "../../api";
 import { ref } from "vue";
 
 function formatDate(dateString) {
     const date = new Date(dateString);
     const year = date.getFullYear();
-    const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const monthNames = [
+        "Jan",
+        "Feb",
+        "Mar",
+        "Apr",
+        "May",
+        "Jun",
+        "Jul",
+        "Aug",
+        "Sep",
+        "Oct",
+        "Nov",
+        "Dec",
+    ];
     const month = monthNames[date.getMonth()];
-    const day = String(date.getDate()).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, "0");
     return `${year}-${month}-${day}`;
 }
 
 export default {
-    components: {
-    },
+    components: {},
 
     data() {
         return {
             items: [],
-            menuDrop: ([
+            namaLengkapFilter: '',
+            menuDrop: [ //menu dropdown
                 {
-                    label: 'Update',
-                    icon: 'pi pi-refresh'
+                    label: "Update",
+                    icon: "pi pi-refresh",
                 },
                 {
-                    label: 'Delete',
-                    icon: 'pi pi-times'
+                    label: "Delete",
+                    icon: "pi pi-times",
                 },
                 {
-                    label: 'Vue Website',
-                    icon: 'pi pi-external-link',
+                    label: "Vue Website",
+                    icon: "pi pi-external-link",
                     command: () => {
-                        window.location.href = 'https://vuejs.org/';
-                    }
+                        window.location.href = "https://vuejs.org/";
+                    },
                 },
                 {
-                    label: 'Upload',
-                    icon: 'pi pi-upload',
+                    label: "Upload",
+                    icon: "pi pi-upload",
                     command: () => {
-                        this.$router.push('fileupload');
-                    }
-                }
-            ]),
+                        this.$router.push("fileupload");
+                    },
+                },
+            ],
 
-            overlayMenuItems: ([
+            //menu dropdown akun
+            overlayMenuItems: [
                 {
-                    label: 'Logout',
-                    icon: 'pi pi-sign-out'
+                    label: "Logout",
+                    icon: "pi pi-sign-out",
                 },
 
                 {
-                    label: 'Aplication Setting',
-                    icon: 'pi pi-cog',
+                    label: "Aplication Setting",
+                    icon: "pi pi-cog",
                     command: () => {
-                        window.location.href = '/option'
-                    }
+                        window.location.href = "/option";
+                    },
                 },
                 {
-                    separator: true
+                    separator: true,
                 },
                 {
-                    label: 'Home',
-                    icon: 'pi pi-home'
-                }
-            ]),
+                    label: "Home",
+                    icon: "pi pi-home",
+                },
+            ],
 
+            startDate: null, // Tanggal Awal
+            endDate: null,   // Tanggal Akhir
+            dateFormat: 'yy-MM-dd',
         };
     },
 
     computed: {
         formattedItems() {
-            return this.items.map(item => {
+            return this.items.map((item) => {
                 item.tgl_lahir = formatDate(item.tgl_lahir);
                 item.tgl_periksa = formatDate(item.tgl_periksa);
+                item.nama_lengkap = item.nama_lengkap.trim();
                 return item;
             });
         },
         // Filter items to only include those with status_pembatalan true
         filteredItemsTrue() {
-            return this.formattedItems.filter(item => item.status_pembatalan === true);
+            return this.formattedItems.filter(
+                (item) => item.status_pembatalan === true
+            );
         },
-        filteredItemsFalse() {
-            return this.formattedItems.filter(item => item.status_pembatalan === false);
-        },
-    },
 
+        filteredItemsFalse() {
+            return this.formattedItems.filter(
+                (item) => item.status_pembatalan === false && item.nama_lengkap.toLowerCase().includes(this.namaLengkapFilter.toLowerCase()));
+        },
+
+
+    },
 
     created() {
         this.fetchDataFromAPI(); // Panggil method untuk mengambil data saat komponen diinisialisasi
     },
 
     methods: {
+
+
         async fetchDataFromAPI() {
             try {
-                const response = await api.get('api/tindakans');
+                const response = await api.get("api/tindakans");
                 this.items = response.data.data.rows;
             } catch (error) {
-                console.error('Error fetching data from API:', error);
+                console.error("Error fetching data from API:", error);
             }
         },
 
@@ -105,31 +131,45 @@ export default {
                 // Kirim permintaan API untuk menghapus item berdasarkan ID atau data yang sesuai
                 const response = await api.delete(`api/tindakans/delete/${item.id}`);
                 // Perbarui data Anda setelah penghapusan berhasil
-                this.items = this.items.filter(i => i.id !== item.id);
+                this.items = this.items.filter((i) => i.id !== item.id);
             } catch (error) {
-                console.error('Error deleting item:', error);
+                console.error("Error deleting item:", error);
+            }
+        },
+
+        async cancelItem(item) {
+            try {
+                // Kirim permintaan API untuk mengubah status tindakan menjadi dibatalkan berdasarkan ID atau data yang sesuai
+                const response = await api.put(`api/tindakans/cancel/${item.id}`);
+
+                // Perbarui status item di data
+                item.status_pembatalan = true;
+
+                this.filteredItemsFalse = this.filteredItemsFalse.filter(
+                    (i) => i.id !== item.id
+                );
+                this.filteredItemsTrue.push(item);
+            } catch (error) {
+                console.error("Error cancelling item:", error);
             }
         },
 
         async editItem(item) {
             try {
                 const response = await api.edit(`api/tindakans/edit/${item.id}`);
-                this.items = this.items.filter(i => i.id !== item.id);
+                this.items = this.items.filter((i) => i.id !== item.id);
             } catch (error) {
-                console.error('Error Edit item: ', error);
+                console.error("Error Edit item: ", error);
             }
         },
-
 
         toggleMenu(event) {
             this.$refs.menu.toggle(event);
         },
     },
-}
-
+};
 
 </script>
-
 <template>
     <!-- NAVBAR -->
     <div class="card">
@@ -162,14 +202,27 @@ export default {
         <div class="card">
             <TabView class="col">
                 <TabPanel header="TINDAKAN ECG">
-                    <DataTable :value="filteredItemsFalse" sortMode="multiple" paginator :rows="10"
+                    <InputText v-model="namaLengkapFilter" placeholder="Cari.." />
+
+                    <DataTable ref="dataTable" :value="filteredItemsFalse" sortMode="multiple" paginator :rows="10"
                         :rowsPerPageOptions="[5, 10, 20, 50]" tableStyle="min-width: 50rem" stripedRows>
 
                         <Column header="Action" body={deleteButtonTemplate} headerStyle="text-align: center;">
                             <template #body="slotProps">
-                                <button @click="deleteItem(slotProps.data)" class="p-button-danger">Delete</button>
+                                <!-- <button @click="deleteItem(slotProps.data)" class="p-button-danger">Delete</button> -->
+                                <button @click="cancelItem(slotProps.data)" class="p-button-secondary">Cancel
+                                </button>
                             </template>
+
                         </Column>
+
+                        <!-- <Column header="Action" headerStyle="text-align: center;">
+                            <template #body="slotProps">
+                                <button @click="cancelItem(slotProps.data)" class="p-button-secondary">Batalkan
+                                    Tindakan</button>
+                            </template>
+                        </Column> -->
+
 
                         <Column field="tgl_periksa" header="Tgl Periksa" sortable
                             headerStyle="white-space: nowrap; text-align: center;"></Column>
@@ -235,6 +288,8 @@ export default {
     </div>
 </template>
 
+
+
 <style>
 table td {
     text-align: center;
@@ -242,5 +297,17 @@ table td {
 
 .custom-table {
     height: 300px;
+}
+
+.p-datatable-thead>tr>th {
+    padding: 5px 12px;
+}
+
+.p-datatable-tbody>tr>td {
+    cursor: auto;
+}
+
+.p-datatable-tbody>tr>td {
+    padding: 10px 10px;
 }
 </style>

@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const { verifyToken } = require("../routes/auth");
 
 //import express validator
 const { body, validationResult } = require("express-validator");
@@ -141,7 +142,7 @@ router.post(
 );
 
 //SHOW
-router.get("/(:id)", function (req, res) {
+router.get("/(:id)", verifyToken, function (req, res) {
   let id = req.params.id;
 
   connection.query(
@@ -275,6 +276,30 @@ router.patch(
     );
   }
 );
+
+// UPDATE status_pembatalan
+router.put("/cancel/:id", (req, res) => {
+  const id = req.params.id;
+
+  connection.query(
+    "UPDATE tindakan_ecgs SET status_pembatalan = true WHERE id = $1",
+    [id],
+    (err, rows) => {
+      if (err) {
+        return res.status(500).json({
+          status: false,
+          message: "Internal Server Error",
+        });
+      } else {
+        return res.status(200).json({
+          status: true,
+          message: "Tindakan telah dibatalkan",
+          id: id,
+        });
+      }
+    }
+  );
+});
 
 //DELETE
 
