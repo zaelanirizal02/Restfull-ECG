@@ -1,5 +1,4 @@
-import api from "../../api";
-import { ref } from "vue";
+import api from "../api";
 
 function formatDate(dateString) {
   const date = new Date(dateString);
@@ -24,11 +23,16 @@ function formatDate(dateString) {
 }
 
 export default {
+  name: "index",
+
   components: {},
 
   data() {
     return {
       items: [],
+      namaLengkapFilter: "",
+
+      itemToDelete: null,
       menuDrop: [
         {
           label: "Update",
@@ -54,7 +58,7 @@ export default {
         },
       ],
 
-      overlayMenuItems: [
+      menuSetting: [
         {
           label: "Logout",
           icon: "pi pi-sign-out",
@@ -64,7 +68,7 @@ export default {
           label: "Aplication Setting",
           icon: "pi pi-cog",
           command: () => {
-            window.location.href = "/option";
+            window.location.href = "/setting";
           },
         },
         {
@@ -83,6 +87,7 @@ export default {
       return this.items.map((item) => {
         item.tgl_lahir = formatDate(item.tgl_lahir);
         item.tgl_periksa = formatDate(item.tgl_periksa);
+        item.nama_lengkap = item.nama_lengkap.trim();
         return item;
       });
     },
@@ -94,7 +99,11 @@ export default {
     },
     filteredItemsFalse() {
       return this.formattedItems.filter(
-        (item) => item.status_pembatalan === false
+        (item) =>
+          item.status_pembatalan === false &&
+          item.nama_lengkap
+            .toLowerCase()
+            .includes(this.namaLengkapFilter.toLowerCase())
       );
     },
   },
@@ -104,6 +113,61 @@ export default {
   },
 
   methods: {
+    confirmDelete(item) {
+      this.$confirm.require({
+        message: "Are you sure you want to Delete?",
+        header: "Confirmation",
+        icon: "pi pi-exclamation-triangle",
+        accept: () => {
+          console.log("confirm");
+          this.$toast.add({
+            severity: "info",
+            summary: "Confirmed",
+            detail: "You have accepted",
+            life: 3000,
+          });
+          // Panggil metode deleteItem untuk menghapus item yang telah dikonfirmasi
+          this.deleteItem(item);
+        },
+        reject: () => {
+          this.$toast.add({
+            severity: "error",
+            summary: "Rejected",
+            detail: "You have rejected",
+            life: 3000,
+          });
+        },
+      });
+      // Simpan item yang akan dihapus dalam properti itemToDelete
+      // this.itemToDelete = item;
+    },
+    confirmCancel(item) {
+      this.$confirm.require({
+        message: "Are you sure you want to Cancel?",
+        header: "Confirmation",
+        icon: "pi pi-exclamation-triangle",
+        accept: () => {
+          console.log("cancel");
+          this.$toast.add({
+            severity: "info",
+            summary: "Confirmed",
+            detail: "You have accepted",
+            life: 3000,
+          });
+          // Panggil metode deleteItem untuk menghapus item yang telah dikonfirmasi
+          this.cancelItem(item);
+        },
+        reject: () => {
+          this.$toast.add({
+            severity: "error",
+            summary: "Rejected",
+            detail: "You have rejected",
+            life: 3000,
+          });
+        },
+        close: () => {},
+      });
+    },
     async fetchDataFromAPI() {
       try {
         const response = await api.get("api/tindakans");
@@ -114,8 +178,8 @@ export default {
     },
 
     async deleteItem(item) {
+      // Lakukan tindakan penghapusan jika pengguna menerima konfirmasi
       try {
-        // Kirim permintaan API untuk menghapus item berdasarkan ID atau data yang sesuai
         const response = await api.delete(`api/tindakans/delete/${item.id}`);
         // Perbarui data Anda setelah penghapusan berhasil
         this.items = this.items.filter((i) => i.id !== item.id);
@@ -132,14 +196,32 @@ export default {
         // Perbarui status item di data
         item.status_pembatalan = true;
 
-        this.filteredItemsFalse = this.filteredItemsFalse.filter(
-          (i) => i.id !== item.id
-        );
-        this.filteredItemsTrue.push(item);
+        this.items = this.items.filter((i) => i.id !== item.id);
       } catch (error) {
         console.error("Error cancelling item:", error);
       }
+      this.fetchDataFromAPI();
     },
+
+    //     async cancelItem(item) {
+    //   try {
+    //     // Kirim permintaan API untuk mengubah status tindakan menjadi dibatalkan berdasarkan ID atau data yang sesuai
+    //     const response = await api.put(`api/tindakans/cancel/${item.id}`);
+
+    //     if (response.status === 200) {
+    //       // Jika permintaan berhasil, perbarui status item di data
+    //       item.status_pembatalan = true;
+
+    //       // Tunggu sebentar untuk memastikan perubahan sudah tersimpan dan proses selesai
+    //       await new Promise(resolve => setTimeout(resolve, 1000));
+
+    //       // Panggil metode fetchDataFromAPI untuk mengambil data terbaru
+    //       this.fetchDataFromAPI();
+    //     }
+    //   } catch (error) {
+    //     console.error("Error cancelling item:", error);
+    //   }
+    // }
 
     async editItem(item) {
       try {

@@ -34,7 +34,7 @@ const routes = [
       import(/* webpackChunkName: "edit" */ "../views/tindakans/edit.vue"),
   },
   {
-    path: "/option",
+    path: "/setting",
     name: "tindakans.setting",
     component: () =>
       import(/* webpackChunkName: "edit" */ "../views/tindakans/setting.vue"),

@@ -11,6 +11,7 @@ const { body, validationResult } = require("express-validator");
 const connection = require("../config/pg-database");
 //
 const bodyParser = require("body-parser");
+const { Connection } = require("pg");
 app.use(bodyParser.json());
 
 // Sisipkan penggunaan router di sini
@@ -48,82 +49,122 @@ router.post("/login", async (req, res) => {
   const { username, password } = req.body;
 
   // Cari pengguna berdasarkan username
-  const user = await connection.query(
+  const userLogin = await connection.query(
     "SELECT * FROM users WHERE username = $1",
     [username]
   );
 
   // Jika pengguna tidak ditemukan
-  if (user.length === 0) {
+  if (userLogin.length === 0) {
     return res.status(401).json({ message: "Login gagal" });
   }
 
   // Periksa apakah token pengguna telah diblokir
-  const userToken = user.rows[0].token;
+  const userToken = userLogin.rows[0].token;
   if (blockedTokens.includes(userToken)) {
     return res.status(403).json({
       message: "Token tidak valid: Token pengguna telah diblokir",
     });
   }
-  console.log(user.rows[0].password);
+
   // Ambil password hash dari hasil query
-  const userPassword = user.rows[0].password;
+  const userPassword = userLogin.rows[0].password;
 
   // Periksa kata sandi dengan Bcrypt
   const passwordMatch = await bcrypt.compareSync(password, userPassword);
 
   if (passwordMatch) {
     // Buat token baru
-    const token = jwt.sign({ username: user.rows[0].username }, "rahasia", {
+    const token = jwt.sign({ userId: userLogin.rows[0].id }, "rahasia", {
       expiresIn: "1h",
     });
 
-    res.json({ message: "login berhasil", token });
+    res.status(200).json({
+      message: "login berhasil",
+
+      data: {
+        user: {
+          userId: userLogin.rows[0].id,
+          username: userLogin.rows[0].username,
+        },
+        accesToken: token,
+      },
+    });
   } else {
     res.status(401).json({ message: "Login gagal" });
   }
 });
 
-router.post("/logout", (req, res) => {
-  const token = req.header("Authorization");
+router.post("/logout", verifyToken, async (req, res) => {
+  try {
+    const token = req.headers.authorization;
+    const tokenSplit = token && token.split(" ")[1];
 
-  if (!token) {
-    return res.status(400).json({ message: "Token tidak ada" });
-  }
+    const check = await connection.query("SELECT * FROM blockTokens");
+    if (check.rows.length < 1) {
+      await connection.query(
+        "INSERT INTO blockTokens (token, user_id) VALUES ($1,$2)",
+        [tokenSplit, req.userId]
+      );
 
+      res.status(201).json({
+        message: "successful logout 1",
+      });
+    }
+
+    if (check.rows[0].token != tokenSplit) {
+      await connection.query("UPDATE blockTokens SET id = $1, token = $2 ", [
+        req.userId,
+        tokenSplit,
+      ]);
+      res.status(201).json({
+        message: "successful logout 2",
+      });
+    }
+  } catch (error) {}
   // Validasi token
-  jwt.verify(token, "rahasia", (err, user) => {
-    if (err) {
-      return res.status(403).json({ message: "Token tidak valid" });
-    }
 
-    if (blockedTokens.includes(token)) {
-      // Hapus token dari daftar blockedTokens
-      const index = blockedTokens.indexOf(token);
-      if (index > -1) {
-        blockedTokens.splice(index, 1);
-      }
-      return res.json({ message: "Logout berhasil" });
-    } else {
-      return res
-        .status(403)
-        .json({ message: "Token tidak ada dalam daftar diblokir" });
-    }
-  });
+  // jwt.verify(token, "rahasia", (err, user) => {
+  //   if (err) {
+  //     return res.status(403).json({ message: "Token tidak valid" });
+  //   }
+
+  //   if (existingToken.includes(token)) {
+  //     // Hapus token dari daftar blockedTokens
+  //     const index = existingToken.indexOf(token);
+  //     if (index > -1) {
+  //       existingToken.splice(index, 1);
+  //     }
+  //     return res.json({ message: "Logout berhasil" });
+  //   } else {
+  //     return res
+  //       .status(403)
+  //       .json({ message: "Token tidak ada dalam daftar diblokir" });
+  //   }
+  // });
 });
 
-function verifyToken(req, res, next) {
+async function verifyToken(req, res, next) {
   const authHeader = req.header("Authorization");
   const token = authHeader && authHeader.split(" ")[1];
-  console.log(token);
+  const checkToken = await connection.query(
+    "SELECT * FROM blockTokens where token = $1",
+    [token]
+  );
   if (!token) return res.status(401).json({ message: "Token diperlukan" });
+  console.log(checkToken);
+  if (checkToken.rows.length && checkToken) {
+    res.status(404).json({
+      message: "token diperlukan login ulang",
+    });
+  }
 
-  jwt.verify(token, "rahasia", (err, user) => {
+  jwt.verify(token, "rahasia", (err, decode) => {
     if (err) {
       if (err.name === "JsonWebTokenError") {
-        return res
-          .status(403)
-          .json({ message: "Token tidak valid: Token tidak dapat diproses" });
+        return res.status(403).json({
+          message: "Token tidak valid: Token tidak dapat diproses",
+        });
       }
       if (err.name === "TokenExpiredError") {
         return res
@@ -132,7 +173,7 @@ function verifyToken(req, res, next) {
       }
       return res.status(403).json({ message: "Token tidak valid" });
     }
-    req.user = user;
+    req.userId = decode.userId;
     next();
   });
 }

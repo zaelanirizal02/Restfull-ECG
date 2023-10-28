@@ -26,6 +26,11 @@ import Dropdown from "primevue/dropdown";
 import Divider from "primevue/divider";
 import Listbox from "primevue/listbox";
 import Calendar from "primevue/calendar";
+import Dialog from "primevue/dialog";
+import ConfirmDialog from "primevue/confirmdialog";
+import ConfirmationService from "primevue/confirmationservice";
+import ToastService from "primevue/toastservice";
+import DialogService from "primevue/dialogservice";
 
 // import "primevue/resources/themes/md-dark-deeppurple/theme.css";
 import "primevue/resources/themes/bootstrap4-dark-purple/theme.css";
@@ -39,6 +44,8 @@ import "primeflex/primeflex.min.css";
 import "./assets/style.css";
 
 const app = createApp(App);
+app.component("ConfirmDialog", ConfirmDialog);
+app.component("Dialog", Dialog);
 app.component("Divider", Divider);
 app.component("Dropdown", Dropdown);
 app.component("TabPanel", TabPanel);
@@ -64,6 +71,9 @@ app.component("Listbox", Listbox);
 app.component("Calendar", Calendar);
 
 app.use(PrimeVue, { ripple: true });
+app.use(ConfirmationService);
+app.use(ToastService);
+app.use(DialogService);
 
 app.config.productionTip = false;
 
