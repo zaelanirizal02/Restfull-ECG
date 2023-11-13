@@ -16,6 +16,31 @@ export default {
                 target_ip_hl7: '',
                 target_port_hl7: '',
             },
+
+            overlayMenuItems: ([
+                {
+                    label: "Logout",
+                    icon: "pi pi-sign-out",
+                    command: () => {
+                        this.logout(); // Panggil metode logout saat item Logout diklik
+                    },
+                },
+
+                {
+                    label: 'Aplication Setting',
+                    icon: 'pi pi-cog',
+                    command: () => {
+                        window.location.href = '/setting';
+                    }
+                },
+                {
+                    separator: true
+                },
+                {
+                    label: 'Home',
+                    icon: 'pi pi-home'
+                }
+            ]),
         }
     },
 
@@ -63,7 +88,16 @@ export default {
                 }).catch(error => {
                     this.validation = error.response.data.data;
                 });
-        }
+        },
+
+        logout() {
+            // 1. Hapus token otentikasi dari local storage atau state
+            localStorage.removeItem("accessToken"); // Gantilah ini sesuai dengan cara Anda menyimpan token
+
+            // 2. Alihkan pengguna ke halaman login atau halaman beranda
+            this.$router.push({ name: "login" }); // Gantilah "login" dengan nama rute halaman login Anda
+        },
+
     },
 }
 </script>
@@ -94,8 +128,6 @@ form label {
             </template>
 
             <template #end>
-                <Button icon="pi pi-search" class="mr-2" />
-                <Button icon="pi pi-file-pdf" severity="success" class="mr-2" />
                 <div class="card">
                     <SplitButton label="" icon="pi pi-cog" :model="overlayMenuItems" severity="warning"></SplitButton>
                 </div>

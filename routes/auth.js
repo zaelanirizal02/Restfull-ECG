@@ -76,18 +76,18 @@ router.post("/login", async (req, res) => {
   if (passwordMatch) {
     // Buat token baru
     const token = jwt.sign({ userId: userLogin.rows[0].id }, "rahasia", {
-      expiresIn: "1h",
+      expiresIn: "1d",
     });
 
     res.status(200).json({
       message: "login berhasil",
 
       data: {
+        accessToken: token,
         user: {
           userId: userLogin.rows[0].id,
           username: userLogin.rows[0].username,
         },
-        accesToken: token,
       },
     });
   } else {
@@ -122,26 +122,6 @@ router.post("/logout", verifyToken, async (req, res) => {
       });
     }
   } catch (error) {}
-  // Validasi token
-
-  // jwt.verify(token, "rahasia", (err, user) => {
-  //   if (err) {
-  //     return res.status(403).json({ message: "Token tidak valid" });
-  //   }
-
-  //   if (existingToken.includes(token)) {
-  //     // Hapus token dari daftar blockedTokens
-  //     const index = existingToken.indexOf(token);
-  //     if (index > -1) {
-  //       existingToken.splice(index, 1);
-  //     }
-  //     return res.json({ message: "Logout berhasil" });
-  //   } else {
-  //     return res
-  //       .status(403)
-  //       .json({ message: "Token tidak ada dalam daftar diblokir" });
-  //   }
-  // });
 });
 
 async function verifyToken(req, res, next) {

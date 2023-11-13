@@ -8,7 +8,7 @@ const { body, validationResult } = require("express-validator");
 const connection = require("../config/pg-database");
 
 // INDEX
-router.get("/", function (req, res) {
+router.get("/", verifyToken, function (req, res) {
   //query
   connection.query("SELECT * FROM tindakan_ecgs", function (err, rows) {
     if (err) {
@@ -319,6 +319,72 @@ router.delete("/delete/(:id)", function (req, res) {
         return res.status(200).json({
           status: true,
           message: "Delete Data Successfully",
+        });
+      }
+    }
+  );
+});
+
+// SEARCH BY tgl_periksa
+router.get("/search/:tgl_periksa", verifyToken, function (req, res) {
+  let tgl_periksa = req.params.tgl_periksa;
+
+  connection.query(
+    `SELECT * FROM tindakan_ecgs WHERE tgl_periksa = $1`,
+    [tgl_periksa],
+    function (err, rows) {
+      if (err) {
+        return res.status(500).json({
+          status: false,
+          message: "Internal Server Error",
+          error: err.message,
+        });
+      }
+
+      if (rows.length <= 0) {
+        return res.status(404).json({
+          status: false,
+          message: "Data Tindakan Not Found!",
+        });
+      } else {
+        return res.status(200).json({
+          status: true,
+          message: "Search Result for tgl_periksa",
+          data: rows,
+        });
+      }
+    }
+  );
+});
+
+//SERACH BY tgl_periksa range
+router.get("/search/:start/:end", verifyToken, function (req, res) {
+  const startDate = req.params.start;
+  const endDate = req.params.end;
+
+  connection.query(
+    `SELECT * FROM tindakan_ecgs WHERE tgl_periksa BETWEEN $1 AND $2`,
+    [startDate, endDate],
+    function (err, rows) {
+      if (err) {
+        return res.status(500).json({
+          status: false,
+          message: "Internal Server Error",
+        });
+      }
+      const count = rows.length; // Hitung jumlah data yang ditemukan
+
+      if (rows.length <= 0) {
+        return res.status(404).json({
+          status: false,
+          message: "Data Tindakan not found for the specified tgl_periksa",
+        });
+      } else {
+        return res.status(200).json({
+          status: true,
+          message: "Hasil pencarian rentang tanggal",
+          count: count,
+          data: rows,
         });
       }
     }

@@ -31,11 +31,13 @@ import ConfirmDialog from "primevue/confirmdialog";
 import ConfirmationService from "primevue/confirmationservice";
 import ToastService from "primevue/toastservice";
 import DialogService from "primevue/dialogservice";
+import ColumnGroup from "primevue/columngroup";
+import Row from "primevue/row";
 
 // import "primevue/resources/themes/md-dark-deeppurple/theme.css";
-import "primevue/resources/themes/bootstrap4-dark-purple/theme.css";
+// import "primevue/resources/themes/bootstrap4-dark-purple/theme.css";
 
-// import "primevue/resources/themes/lara-dark-indigo/theme.css";
+import "primevue/resources/themes/lara-dark-indigo/theme.css";
 // import "primeflex/themes/primeone-dark.css";
 
 import "primevue/resources/primevue.min.css";
@@ -44,6 +46,8 @@ import "primeflex/primeflex.min.css";
 import "./assets/style.css";
 
 const app = createApp(App);
+app.component("Row", Row);
+app.component("ColumGroup", ColumnGroup);
 app.component("ConfirmDialog", ConfirmDialog);
 app.component("Dialog", Dialog);
 app.component("Divider", Divider);

@@ -34,34 +34,62 @@ export default tindakanController;
         <div class="card">
             <TabView class="col">
                 <TabPanel header="TINDAKAN ECG">
+                    <div>
+                        <span class="p-float-label p-input-icon-left">
+                            <i class="pi pi-search" />
+                            <InputText id="namaLengkapFilter" name="namaLengkapFilter" v-model="namaLengkapFilter"
+                                class="mr-2" />
+                            <label for="namaLengkapFilter">Cari Nama</label>
+                        </span>
+
+                        <!-- <label for="dateFilterStart" class="mr-2">Tanggal Awal</label>
+                        <Calendar v-model="dateFilterStart" class="mr-2" id="dateFilterStart" dateFormat="yy-mm-dd"
+                            :manualInput="true" showButtonBar showIcon>
+                        </Calendar> -->
+
+                        <label for="range" class="mr-2">Tanggal-</label>
+                        <Calendar v-model="dateFilterRange" selectionMode="range" class="mr-2" id="range"
+                            dateFormat="yy-mm-dd" :manualInput="false" showButtonBar showIcon>
+                        </Calendar>
+
+                        <Button icon="pi pi-search" @click="caritglPeriksa" />
+                    </div>
+
                     <!-- <ConfirmDialog ref="confirmCancelDialog"></ConfirmDialog> -->
 
-                    <InputText v-model="namaLengkapFilter" placeholder="Cari.." />
+                    <div class="card flex justify-content-center">
+                    </div>
 
                     <DataTable ref="dataTable" :value="filteredItemsFalse" sortMode="multiple" paginator :rows="10"
-                        :rowsPerPageOptions="[5, 10, 20, 50]" tableStyle="min-width: 50rem" stripedRows>
-
+                        :rowsPerPageOptions="[5, 10, 20, 50]" tableStyle="min-width: 50rem" stripedRows
+                        paginatorTemplate="RowsPerPageDropdown FirstPageLink PrevPageLink CurrentPageReport NextPageLink LastPageLink"
+                        currentPageReportTemplate="{first} to {last} of {totalRecords}"
+                        :rowExpansionTemplate="rowExpansionTemplate" :groupField="groupField" :sortMode="sortMode"
+                        :groupBy="groupBy">
                         <Column header="Action" body={cancelButtonTemplate} headerStyle="text-align: center;">
                             <template #body="slotProps">
                                 <Toast />
                                 <div class="card flex flex-wrap gap-2 justify-content-center">
-                                    <Button @click="confirmCancel(slotProps.data)" icon="pi pi-check" label="Cancel"
-                                        severity="warning"></Button>
+                                    <Button @click="confirmCancel(slotProps.data)" icon="" label="Cancel" severity="warning"
+                                        style="height: 30px;"></Button>
                                 </div>
                             </template>
                         </Column>
-
                         <Column field="tgl_periksa" header="Tgl Periksa" sortable
-                            headerStyle="white-space: nowrap; text-align: center;"></Column>
+                            headerStyle="white-space: nowrap; text-align: center">
+                        </Column>
+
                         <Column field="no_mr" header="NO MR" sortable headerStyle="white-space: nowrap; text-align: center;"
-                            tableStyle="'min-width:40rem'"></Column>
+                            tableStyle="'min-width:40rem'">
+                        </Column>
                         <Column field="nama_lengkap" header="Nama" sortable
                             headerStyle="white-space: nowrap; text-align: center;"></Column>
                         <Column field="tgl_lahir" header="Tgl Lahir" sortable
                             headerStyle="white-space: nowrap; text-align: center;">
                         </Column>
                         <Column field="jenis_kelamin" header="Jenis Kelamin" sortable
-                            headerStyle="white-space: nowrap; text-align: center;" tableStyle="'min-width:40rem'"></Column>
+                            headerStyle="white-space: nowrap; text-align: center;" tableStyle="'min-width:40rem'">
+                        </Column>
                         <Column field="title" header="Title" sortable></Column>
                         <Column field="race" header="Race" sortable></Column>
                         <Column field="jam_periksa" header="Jam Periksa" sortable></Column>
@@ -83,12 +111,27 @@ export default tindakanController;
                     <ConfirmDialog ref="confirmDeleteDialog"></ConfirmDialog>
                     <DataTable :value="filteredItemsTrue" sortMode="multiple" paginator :rows="10"
                         :rowsPerPageOptions="[5, 10, 20, 50]" tableStyle="min-width: 50rem" stripedRows>
+                        <div>
+                            <InputText v-model="namaLengkapFilter" class="mr-2" placeholder="Cari Nama ..." />
+
+                            <!-- <label for="dateFilterStart" class="mr-2">Tanggal Awal</label>
+                        <Calendar v-model="dateFilterStart" class="mr-2" id="dateFilterStart" dateFormat="yy-mm-dd"
+                            :manualInput="true" showButtonBar showIcon>
+                        </Calendar> -->
+
+                            <label for="dateFilterEnd" class="mr-2">Tanggal-</label>
+                            <Calendar v-model="dateFilterRange" :maxDate="maxDate" selectionMode="range" class="mr-2"
+                                id="dateFilterEnd" dateFormat="yy-mm--dd" :manualInput="true" showButtonBar showIcon>
+                            </Calendar>
+
+                            <Button icon="pi pi-search" @click="caritglPeriksa" />
+                        </div>
                         <Column header="Action" body={deleteButtonTemplate} headerStyle="text-align: center;">
                             <template #body="slotProps">
                                 <Toast />
                                 <div class="card flex flex-wrap gap-2 justify-content-center">
-                                    <Button @click="confirmDelete(slotProps.data)" icon="pi pi-check" label="Delete"
-                                        severity="danger"></Button>
+                                    <Button @click="confirmDelete(slotProps.data)" icon="pi pi-trash" label="Delete"
+                                        severity="danger" style="height: 30px;"></Button>
                                 </div>
                             </template>
                         </Column>
@@ -97,7 +140,8 @@ export default tindakanController;
                         <Column field="no_mr" header="NO MR" sortable headerStyle="white-space: nowrap; text-align: center;"
                             tableStyle="'min-width:40rem'"></Column>
                         <Column field="nama_lengkap" header="Nama" sortable
-                            headerStyle="white-space: nowrap; text-align: center;"></Column>
+                            headerStyle="white-space: nowrap; text-align: center;">
+                        </Column>
                         <Column field="tgl_lahir" header="Tgl Lahir" sortable
                             headerStyle="white-space: nowrap; text-align: center;">
                         </Column>

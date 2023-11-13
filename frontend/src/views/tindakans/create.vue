@@ -30,15 +30,18 @@ export default {
             },
             overlayMenuItems: ([
                 {
-                    label: 'Logout',
-                    icon: 'pi pi-sign-out'
+                    label: "Logout",
+                    icon: "pi pi-sign-out",
+                    command: () => {
+                        this.logout(); // Panggil metode logout saat item Logout diklik
+                    },
                 },
 
                 {
                     label: 'Aplication Setting',
                     icon: 'pi pi-cog',
                     command: () => {
-                        window.location.href = '/option';
+                        window.location.href = '/setting';
                     }
                 },
                 {
@@ -92,7 +95,16 @@ export default {
             } catch (error) {
                 console.error('Terjadi Kesalahan', error);
             }
-        }
+        },
+
+        logout() {
+            // 1. Hapus token otentikasi dari local storage atau state
+            localStorage.removeItem("accessToken"); // Gantilah ini sesuai dengan cara Anda menyimpan token
+
+            // 2. Alihkan pengguna ke halaman login atau halaman beranda
+            this.$router.push({ name: "login" }); // Gantilah "login" dengan nama rute halaman login Anda
+        },
+
     }
 }
 </script>
