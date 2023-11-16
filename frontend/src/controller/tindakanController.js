@@ -38,8 +38,7 @@ export default {
       dateFilterRange: null,
       maxDate: new Date(),
       itemToDelete: null,
-      groupField: "",
-      groupBy: "",
+      expandedRows: [],
       menuDrop: [
         {
           label: "Update",
@@ -151,6 +150,61 @@ export default {
       const day = String(date.getDate()).padStart(2, "0");
       return `${currentYear}-${month}-${day}`;
     },
+
+    // onRowExpand(item) {
+    //   // console.log("Row Expand:", item.data);
+    //   const expandedItem = this.formattedItems.find(
+    //     (i) => i.id === item.data.id
+    //   );
+    //   this.expandedRows.push(expandedItem);
+
+    //   console.log("Expanded Rows:", this.expandedRows);
+    //   this.$toast.add({
+    //     severity: "info",
+    //     summary: "Product Expanded",
+    //     detail: `Atas Nama : ${item.data.nama_lengkap}`,
+    //     life: 3000,
+    //   });
+    // },
+    // onRowCollapse(item) {
+    //   // console.log("Row Collapsed:", item.data);
+    //   this.expandedRows = this.expandedRows.filter((row) => row !== item.data);
+    //   this.$toast.add({
+    //     severity: "success",
+    //     summary: "Product Collapsed",
+    //     detail: `Atas Nama : ${item.data.nama_lengkap}`,
+    //     life: 3000,
+    //   });
+    // },
+
+    onRowExpand(item) {
+      // Ambil objek yang sesuai dari slotProps.item.data
+      const expandedItem = this.formattedItems.find(
+        (i) => i.id === item.data.id
+      );
+
+      // Tambahkan objek ke expandedRows
+      this.expandedRows.push(expandedItem);
+
+      console.log("Expanded Rows:", this.expandedRows);
+      // ...
+    },
+
+    onRowCollapse(item) {
+      // Ambil objek yang sesuai dari slotProps.item.data
+      const collapsedItem = this.formattedItems.find(
+        (i) => i.id === item.data.id
+      );
+
+      // Hapus objek dari expandedRows
+      this.expandedRows = this.expandedRows.filter(
+        (row) => row.id !== collapsedItem.id
+      );
+
+      console.log("Expanded Rows:", this.expandedRows);
+      // ...
+    },
+
     confirmDelete(item) {
       this.$confirm.require({
         message: "Are you sure you want to Delete?",
@@ -296,22 +350,6 @@ export default {
         // this.items = response.data.data.rows;
       } catch (error) {
         console.error("Error ambil data dari API:", error);
-      }
-    },
-    rowExpansionTemplate(data) {
-      // Temukan item yang sesuai dalam properti items berdasarkan data.id atau properti lain yang unik
-      const selectedItem = this.items.find((item) => item.id === data.id);
-
-      if (selectedItem) {
-        return `
-      <div>
-        <h5>Race: {{ selectedItem.race }}</h5>
-        <h5>Nama Lengkap: {{ selectedItem.nama_lengkap }}</h5>
-      </div>
-    `;
-      } else {
-        // Tampilkan pesan atau elemen lain jika data tidak ditemukan
-        return "<div><p>Data tidak ditemukan.</p></div>";
       }
     },
 

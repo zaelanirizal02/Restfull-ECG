@@ -45,6 +45,7 @@ body {
 
 .p-calendar .p-inputtext {
   width: 10rem !important;
+  /* height: 2rem; */
 }
 
 input {

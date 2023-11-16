@@ -12,7 +12,7 @@ export default tindakanController;
                 <a href="/create">
                     <Button label="Tambah" icon="pi pi-plus" class="mr-2" />
                 </a>
-                <i class="pi pi-bars p-toolbar-separator mr-2" />
+                <i class="pi pi-bars p-toolbar-separator mr-3" />
                 <SplitButton label="Save" icon="pi pi-check" :model="menuDrop" severity="warning"></SplitButton>
             </template>
 
@@ -63,10 +63,10 @@ export default tindakanController;
                     <DataTable ref="dataTable" :value="filteredItemsFalse" sortMode="multiple" paginator :rows="10"
                         :rowsPerPageOptions="[5, 10, 20, 50]" tableStyle="min-width: 50rem" stripedRows
                         paginatorTemplate="RowsPerPageDropdown FirstPageLink PrevPageLink CurrentPageReport NextPageLink LastPageLink"
-                        currentPageReportTemplate="{first} to {last} of {totalRecords}"
-                        :rowExpansionTemplate="rowExpansionTemplate" :groupField="groupField" :sortMode="sortMode"
-                        :groupBy="groupBy">
-                        <Column header="Action" body={cancelButtonTemplate} headerStyle="text-align: center;">
+                        currentPageReportTemplate="{first} to {last} of {totalRecords}" v-model:expandedRows="expandedRows"
+                        @rowExpand="onRowExpand" @rowCollapse="onRowCollapse">
+                        <Column expander style="width: 5rem" />
+                        <!-- <Column header="Action" body={cancelButtonTemplate} headerStyle="text-align: center;">
                             <template #body="slotProps">
                                 <Toast />
                                 <div class="card flex flex-wrap gap-2 justify-content-center">
@@ -74,7 +74,7 @@ export default tindakanController;
                                         style="height: 30px;"></Button>
                                 </div>
                             </template>
-                        </Column>
+                        </Column> -->
                         <Column field="tgl_periksa" header="Tgl Periksa" sortable
                             headerStyle="white-space: nowrap; text-align: center">
                         </Column>
@@ -102,6 +102,36 @@ export default tindakanController;
                         <Column field="id_dokter_perujuk" header="ID Dokter Perujuk" sortable></Column>
                         <Column field="nama_dokter_perujuk" header="Nama Dokter Perujuk" sortable></Column>
                         <Column field="ruangan_dokter_perujuk" header="Ruangan Dokter Perujuk" sortable></Column>
+
+                        <template #expansion="slotProps">
+                            <div>
+                                <h3>Data dari : {{ slotProps.data.nama_lengkap }}</h3>
+                                <DataTable :value="[slotProps.data]">
+                                    <Column header="Action" body={cancelButtonTemplate}
+                                        headerStyle="white-space: nowrap; text-align: center; max-width: 75px;"
+                                        bodyStyle="white-space: nowrap; max-width: 75px;">
+                                        <template #body="slotProps">
+                                            <Toast />
+                                            <div class="">
+                                                <Button @click="confirmCancel(slotProps.data)" icon="" label="Cancel"
+                                                    severity="warning" style="height: 30px;"></Button>
+                                            </div>
+                                        </template>
+                                    </Column>
+                                    <Column field="tgl_lahir" header="Tanggal Lahir">
+                                    </Column>
+
+                                    <Column>
+                                        <template #body>
+                                            <Button icon="pi pi-search" />
+                                        </template>
+                                    </Column>
+
+
+                                </DataTable>
+                                <!-- Tambahkan kolom-kolom lainnya sesuai kebutuhan -->
+                            </div>
+                        </template>
                     </DataTable>
                 </TabPanel>
 
@@ -178,7 +208,7 @@ table td {
 }
 
 .p-datatable-thead>tr>th {
-    padding: 5px 12px;
+    padding: 5px 10px;
 }
 
 .p-datatable-tbody>tr>td {
@@ -186,6 +216,6 @@ table td {
 }
 
 .p-datatable-tbody>tr>td {
-    padding: 10px 10px;
+    padding: 7px 10px;
 }
 </style>
