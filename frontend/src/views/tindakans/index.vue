@@ -10,19 +10,21 @@ export default tindakanController;
         <Toolbar>
             <template #start>
                 <a href="/create">
-                    <Button label="Tambah" icon="pi pi-plus" class="mr-2" />
+                    <Button label="Tambah" icon="pi pi-plus" class="mr-2 bs" />
                 </a>
                 <i class="pi pi-bars p-toolbar-separator mr-3" />
-                <SplitButton label="Save" icon="pi pi-check" :model="menuDrop" severity="warning"></SplitButton>
+                <SplitButton label="Save" icon="pi pi-check" :model="menuDrop" severity="warning"
+                    style="width: 130px; height: 35px;">
+                </SplitButton>
             </template>
 
             <template #end>
-                <Button icon="pi pi-search" class="mr-2" />
-                <Button icon="pi pi-file-pdf" severity="success" class="mr-2" />
+                <Button icon="pi pi-search" class="mr-2" style=" height: 35px; " />
+                <Button icon="pi pi-file-pdf" severity="success" class="mr-2 bs" />
                 <div class="card">
                     <!-- <Menu ref="menu" :model="overlayMenuItems" :popup="true" /> -->
                     <!-- <SplitButton label="TES" type="" icon="pi pi-user" @click="toggleMenu" style="width: 50px" /> -->
-                    <SplitButton label="" icon="pi pi-cog" :model="menuSetting" severity="">
+                    <SplitButton class="bs" label="" icon="pi pi-cog" :model="menuSetting" severity="">
                     </SplitButton>
                 </div>
             </template>
@@ -37,22 +39,15 @@ export default tindakanController;
                     <div>
                         <span class="p-float-label p-input-icon-left">
                             <i class="pi pi-search" />
-                            <InputText id="namaLengkapFilter" name="namaLengkapFilter" v-model="namaLengkapFilter"
-                                class="mr-2" />
-                            <label for="namaLengkapFilter">Cari Nama</label>
+                            <InputText v-model="nameFilter" class="mr-2 bs" />
+                            <label for="nameFilter">Cari Nama</label>
                         </span>
-
-                        <!-- <label for="dateFilterStart" class="mr-2">Tanggal Awal</label>
-                        <Calendar v-model="dateFilterStart" class="mr-2" id="dateFilterStart" dateFormat="yy-mm-dd"
-                            :manualInput="true" showButtonBar showIcon>
-                        </Calendar> -->
-
                         <label for="range" class="mr-2">Tanggal-</label>
-                        <Calendar v-model="dateFilterRange" selectionMode="range" class="mr-2" id="range"
+                        <Calendar v-model="dateFilterRange" selectionMode="range" class="mr-2 bs" id="range"
                             dateFormat="yy-mm-dd" :manualInput="false" showButtonBar showIcon>
                         </Calendar>
 
-                        <Button icon="pi pi-search" @click="caritglPeriksa" />
+                        <Button class="bs" icon="pi pi-search" @click="caritglPeriksa" />
                     </div>
 
                     <!-- <ConfirmDialog ref="confirmCancelDialog"></ConfirmDialog> -->
@@ -109,21 +104,21 @@ export default tindakanController;
                                 <DataTable :value="[slotProps.data]">
                                     <Column header="Action" body={cancelButtonTemplate}
                                         headerStyle="white-space: nowrap; text-align: center; max-width: 75px;"
-                                        bodyStyle="white-space: nowrap; max-width: 75px;">
+                                        bodyStyle="white-space: nowrap; max-width: 80px; text-align: left;">
                                         <template #body="slotProps">
                                             <Toast />
                                             <div class="">
-                                                <Button @click="confirmCancel(slotProps.data)" icon="" label="Cancel"
-                                                    severity="warning" style="height: 30px;"></Button>
+                                                <Button class="bs" @click="confirmCancel(slotProps.data)" icon=""
+                                                    label="Cancel" severity="warning"></Button>
                                             </div>
                                         </template>
                                     </Column>
-                                    <Column field="tgl_lahir" header="Tanggal Lahir">
+                                    <Column field="tgl_lahir" header="Tanggal Lahir" style="text-align: left;">
                                     </Column>
 
-                                    <Column>
+                                    <Column style="text-align: left;">
                                         <template #body>
-                                            <Button icon="pi pi-search" />
+                                            <Button icon="pi pi-eye" />
                                         </template>
                                     </Column>
 
@@ -142,16 +137,11 @@ export default tindakanController;
                     <DataTable :value="filteredItemsTrue" sortMode="multiple" paginator :rows="10"
                         :rowsPerPageOptions="[5, 10, 20, 50]" tableStyle="min-width: 50rem" stripedRows>
                         <div>
-                            <InputText v-model="namaLengkapFilter" class="mr-2" placeholder="Cari Nama ..." />
 
-                            <!-- <label for="dateFilterStart" class="mr-2">Tanggal Awal</label>
-                        <Calendar v-model="dateFilterStart" class="mr-2" id="dateFilterStart" dateFormat="yy-mm-dd"
-                            :manualInput="true" showButtonBar showIcon>
-                        </Calendar> -->
 
                             <label for="dateFilterEnd" class="mr-2">Tanggal-</label>
                             <Calendar v-model="dateFilterRange" :maxDate="maxDate" selectionMode="range" class="mr-2"
-                                id="dateFilterEnd" dateFormat="yy-mm--dd" :manualInput="true" showButtonBar showIcon>
+                                id="dateFilterEnd" dateFormat="yy-mm-dd" :manualInput="true" showButtonBar showIcon>
                             </Calendar>
 
                             <Button icon="pi pi-search" @click="caritglPeriksa" />
@@ -217,5 +207,9 @@ table td {
 
 .p-datatable-tbody>tr>td {
     padding: 7px 10px;
+}
+
+.bs {
+    height: 35px;
 }
 </style>

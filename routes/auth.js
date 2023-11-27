@@ -55,12 +55,12 @@ router.post("/login", async (req, res) => {
   );
 
   // Jika pengguna tidak ditemukan
-  if (userLogin.length === 0) {
+  if (userLogin.rows.length === 0) {
     return res.status(401).json({ message: "Login gagal" });
   }
 
   // Periksa apakah token pengguna telah diblokir
-  const userToken = userLogin.rows[0].token;
+  const userToken = userLogin.rows[0]?.token; // Gunakan "?." untuk mengatasi undefined
   if (blockedTokens.includes(userToken)) {
     return res.status(403).json({
       message: "Token tidak valid: Token pengguna telah diblokir",
@@ -132,7 +132,9 @@ async function verifyToken(req, res, next) {
     [token]
   );
   if (!token) return res.status(401).json({ message: "Token diperlukan" });
-  console.log(checkToken);
+
+  // console.log(checkToken);
+
   if (checkToken.rows.length && checkToken) {
     res.status(404).json({
       message: "token diperlukan login ulang",

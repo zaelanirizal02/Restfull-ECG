@@ -10,13 +10,16 @@ export default {
         };
     },
     methods: {
+
+
         async login() {
+
             try {
                 const response = await api.post('api/auth/login', {
                     username: this.username,
                     password: this.password,
                 },);
-                console.log(response.data.data.accessToken);
+                // console.log(response.data.data.accessToken);
 
                 if (response.status === 200) {
                     // Login berhasil
@@ -55,7 +58,6 @@ export default {
                     <label class="w-6rem">Password</label>
                     <InputText v-model="password" id="password" type="password" class="w-12rem" />
                 </div>
-                <Button label="Login" @click="login()" icon="pi pi-user" class="w-10rem"></Button>
 
             </div>
             <div class="w-full md:w-2">
@@ -63,7 +65,13 @@ export default {
                 <Divider layout="horizontal" class="flex md:hidden" align="center"><b>OR</b></Divider>
             </div>
             <div class="w-full md:w-5 flex align-items-center justify-content-center py-5">
-                <Button label="Sign Up" icon="pi pi-user-plus" severity="success" class="center w-10rem"></Button>
+                <div>
+                    <Button label="Login" @click="login()" icon="pi pi-user" class="w-10rem"></Button>
+                </div>
+                <div>
+
+                    <Button label="Sign Up" icon="pi pi-user-plus" severity="success" class="center w-10rem"></Button>
+                </div>
             </div>
         </div>
     </div>
@@ -73,6 +81,7 @@ export default {
     margin: 200px;
     height: 300px;
     padding: 15px;
+    background-color: rgb(34, 50, 74);
 }
 
 .center {

@@ -357,38 +357,61 @@ router.get("/search/:tgl_periksa", verifyToken, function (req, res) {
   );
 });
 
-//SERACH BY tgl_periksa range
-router.get("/search/:start/:end", verifyToken, function (req, res) {
-  const startDate = req.params.start;
-  const endDate = req.params.end;
+// SEARCH BY tgl_periksa range dan name
+router.get("/search/:name/:start/:end", verifyToken, function (req, res) {
+  const filterName = req.params.name || null;
+  const startDate = req.params.start || null;
+  const endDate = req.params.end || null;
 
-  connection.query(
-    `SELECT * FROM tindakan_ecgs WHERE tgl_periksa BETWEEN $1 AND $2`,
-    [startDate, endDate],
-    function (err, rows) {
-      if (err) {
-        return res.status(500).json({
-          status: false,
-          message: "Internal Server Error",
-        });
-      }
-      const count = rows.length; // Hitung jumlah data yang ditemukan
+  if (!startDate && !filterName) {
+    return res.status(400).json({
+      status: false,
+      message: "Please provide at least one parameter for the search.",
+    });
+  }
 
-      if (rows.length <= 0) {
-        return res.status(404).json({
-          status: false,
-          message: "Data Tindakan not found for the specified tgl_periksa",
-        });
-      } else {
-        return res.status(200).json({
-          status: true,
-          message: "Hasil pencarian rentang tanggal",
-          count: count,
-          data: rows,
-        });
-      }
+  let query = "SELECT * FROM tindakan_ecgs WHERE ";
+  const queryParams = [];
+
+  if (startDate && endDate) {
+    query += "tgl_periksa BETWEEN $1 AND $2";
+    queryParams.push(startDate, endDate);
+  }
+
+  if (filterName) {
+    if (startDate && endDate) {
+      query += " AND ";
     }
-  );
+    query += "nama_lengkap = $" + (queryParams.length + 1);
+
+    queryParams.push(filterName);
+  }
+
+  connection.query(query, queryParams, function (err, rows) {
+    if (err) {
+      return res.status(500).json({
+        status: false,
+        message: "Internal Server Error",
+        error: err.message,
+      });
+    }
+
+    const count = rows.length;
+
+    if (count === 0) {
+      return res.status(404).json({
+        status: false,
+        message: "Data Tindakan Not Found for the specified parameters.",
+      });
+    } else {
+      return res.status(200).json({
+        status: true,
+        message: "Search Result",
+        count: count,
+        data: rows,
+      });
+    }
+  });
 });
 
 module.exports = router;

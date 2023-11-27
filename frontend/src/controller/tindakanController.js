@@ -32,10 +32,10 @@ export default {
   data() {
     return {
       items: [],
-      namaLengkapFilter: "",
       dateFilterStart: null,
       dateFilterEnd: null,
-      dateFilterRange: null,
+      nameFilter: null,
+      dateFilterRange: new Date(),
       maxDate: new Date(),
       itemToDelete: null,
       expandedRows: [],
@@ -102,22 +102,18 @@ export default {
     // Filter items to only include those with status_pembatalan true
     filteredItemsTrue() {
       return this.formattedItems.filter(
-        (item) =>
-          item.status_pembatalan === true &&
-          item.nama_lengkap
-            .toLowerCase()
-            .includes(this.namaLengkapFilter.toLowerCase())
+        (item) => item.status_pembatalan === true
+        // &&
+        // item.nama_lengkap
+        //   .toLowerCase()
+        //   .includes(this.namaLengkapFilter.toLowerCase())
       );
     },
 
     // Filter items to only include those with status_pembatalan false
     filteredItemsFalse() {
       return this.formattedItems.filter(
-        (item) =>
-          item.status_pembatalan === false &&
-          item.nama_lengkap
-            .toLowerCase()
-            .includes(this.namaLengkapFilter.toLowerCase())
+        (item) => item.status_pembatalan === false
       );
     },
   },
@@ -331,23 +327,23 @@ export default {
         api.defaults.headers.common["Authorization"] = `Bearer ${accessToken}`;
         if (this.dateFilterRange) {
           // Ambil tanggal awal dan tanggal akhir dari range yang dipilih
-          const startDate = this.formatTgl(this.dateFilterRange[0]);
-          const endDate = this.formatTgl(this.dateFilterRange[1]);
+          const startDate = (this.formatDate = this.formatTgl(
+            this.dateFilterRange[0]
+          ));
+          const endDate = (this.formatDate = this.formatTgl(
+            this.dateFilterRange[1]
+          ));
 
-          // Kirim permintaan API dengan rentang tanggal
+          // Kirim permintaan API dengan rentang tanggal dan nama
           const response = await api.get(
-            `api/tindakans/search/${startDate}/${endDate}`
+            `api/tindakans/search/${this.nameFilter}/${startDate}/${endDate}`
           );
           this.items = response.data.data.rows;
+        } else {
+          // Kirim permintaan API tanpa rentang tanggal dan nama jika tidak ada filter
+          const response = await api.get("api/tindakans");
+          this.items = response.data.data.rows;
         }
-        // // Kirim permintaan API dengan rentang tanggal
-        // const response = await api.get(
-        //   "api/tindakans/search/" +
-        //     this.formatTgl(this.dateFilterStart) +
-        //     "/" +
-        //     this.formatTgl(this.dateFilterEnd)
-        // );
-        // this.items = response.data.data.rows;
       } catch (error) {
         console.error("Error ambil data dari API:", error);
       }
