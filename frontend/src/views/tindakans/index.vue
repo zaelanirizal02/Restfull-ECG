@@ -6,19 +6,28 @@ export default tindakanController;
 
 <template>
     <!-- NAVBAR -->
-    <div class="card">
+    <div class="card pad-atas">
         <Toolbar>
             <template #start>
-                <a href="/create">
-                    <Button label="Tambah" icon="pi pi-plus" class="mr-2 bs" />
-                </a>
-                <i class="pi pi-bars p-toolbar-separator mr-3" />
-                <SplitButton label="Save" icon="pi pi-check" :model="menuDrop" severity="warning"
-                    style="width: 130px; height: 35px;">
-                </SplitButton>
+                <div>
+                    <span class="p-float-label p-input-icon-left">
+                        <i class="pi pi-search" />
+                        <InputText v-model="nameFilter" class="mr-2 bs" />
+                        <label for="nameFilter">Cari Nama</label>
+                    </span>
+                    <label for="range" class="mr-2">Tanggal-</label>
+                    <Calendar v-model="dateFilterRange" selectionMode="range" class="mr-2 bs" id="range"
+                        dateFormat="yy-mm-dd" :showMonthPicker="false" :manualInput="false" showButtonBar showIcon>
+                    </Calendar>
+
+                    <Button class="bs" icon="pi pi-search" @click="caritglPeriksa" />
+                </div>
             </template>
 
             <template #end>
+                <a href="/create">
+                    <Button label="Tambah" icon="pi pi-plus" class="mr-2 bs" />
+                </a>
                 <Button icon="pi pi-search" class="mr-2" style=" height: 35px; " />
                 <Button icon="pi pi-file-pdf" severity="success" class="mr-2 bs" />
                 <div class="card">
@@ -36,19 +45,7 @@ export default tindakanController;
         <div class="card">
             <TabView class="col">
                 <TabPanel header="TINDAKAN ECG">
-                    <div>
-                        <span class="p-float-label p-input-icon-left">
-                            <i class="pi pi-search" />
-                            <InputText v-model="nameFilter" class="mr-2 bs" />
-                            <label for="nameFilter">Cari Nama</label>
-                        </span>
-                        <label for="range" class="mr-2">Tanggal-</label>
-                        <Calendar v-model="dateFilterRange" selectionMode="range" class="mr-2 bs" id="range"
-                            dateFormat="yy-mm-dd" :manualInput="false" showButtonBar showIcon>
-                        </Calendar>
 
-                        <Button class="bs" icon="pi pi-search" @click="caritglPeriksa" />
-                    </div>
 
                     <!-- <ConfirmDialog ref="confirmCancelDialog"></ConfirmDialog> -->
 
@@ -136,16 +133,7 @@ export default tindakanController;
                     <ConfirmDialog ref="confirmDeleteDialog"></ConfirmDialog>
                     <DataTable :value="filteredItemsTrue" sortMode="multiple" paginator :rows="10"
                         :rowsPerPageOptions="[5, 10, 20, 50]" tableStyle="min-width: 50rem" stripedRows>
-                        <div>
 
-
-                            <label for="dateFilterEnd" class="mr-2">Tanggal-</label>
-                            <Calendar v-model="dateFilterRange" :maxDate="maxDate" selectionMode="range" class="mr-2"
-                                id="dateFilterEnd" dateFormat="yy-mm-dd" :manualInput="true" showButtonBar showIcon>
-                            </Calendar>
-
-                            <Button icon="pi pi-search" @click="caritglPeriksa" />
-                        </div>
                         <Column header="Action" body={deleteButtonTemplate} headerStyle="text-align: center;">
                             <template #body="slotProps">
                                 <Toast />
@@ -211,5 +199,18 @@ table td {
 
 .bs {
     height: 35px;
+}
+
+.pad-atas {
+    padding-top: 20px;
+}
+
+.custom-calendar .p-inputtext {
+    width: 50px !important;
+}
+
+.custom-calendar .p-datepicker {
+    width: 100px !important;
+    font-size: 14px !important;
 }
 </style>

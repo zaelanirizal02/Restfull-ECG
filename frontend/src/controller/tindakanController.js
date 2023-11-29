@@ -31,11 +31,12 @@ export default {
 
   data() {
     return {
+      currentYear: new Date().getFullYear(),
       items: [],
       dateFilterStart: null,
       dateFilterEnd: null,
       nameFilter: null,
-      dateFilterRange: new Date(),
+      dateFilterRange: null,
       maxDate: new Date(),
       itemToDelete: null,
       expandedRows: [],
@@ -126,7 +127,7 @@ export default {
     formatTgl(dateString) {
       const date = new Date(dateString);
       const year = date.getFullYear();
-      const currentYear = new Date().getFullYear();
+      const currentYear = this.currentYear;
 
       const monthNames = [
         "Jan",
